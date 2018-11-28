@@ -38,9 +38,13 @@ class Logger():
         if not len(self.handlers):
             raise Exception('No handlers could be found for logger "%s"' % self.name)
 
+        record = LogRecord(self.name, level, msg, args)
+        self.callHandlers(record)
+
+    def callHandlers(self, record):
         for handler in self.handlers:
-            record = LogRecord(self.name, level, msg, args)
-            handler.emit(record)
+            if record.levelno >= handler.level:
+                handler.emit(record)
 
     def addHandler(self, handler):
         if not isinstance(handler, BaseHandler):
@@ -77,12 +81,16 @@ class Logger():
 class BaseHandler():
     def __init__(self):
         self.formatter = Formatter('%(message)s')
+        self.level = NOTSET
 
     def emit(self, record):
         pass
 
     def setFormatter(self, formatter):
         self.formatter = formatter
+
+    def setLevel(self, level):
+        self.level = level
 
 
 class MyStreamHandler(BaseHandler):
@@ -99,6 +107,7 @@ class LogRecord():
     def __init__(self, name, level, msg, args):
         self.name = name
         self.level = _levelNames[level]
+        self.levelno = level
         self.msg = msg
         self.args = args
 
@@ -123,9 +132,13 @@ logger = Logger('my_logger')
 sh = MyStreamHandler()
 sh.setFormatter(Formatter('[%(level)s][%(message)s]'))
 logger.addHandler(sh)
-logger.addHandler(MyStreamHandler())
+# logger.addHandler(MyStreamHandler())
 
 
 logger.setLevel(WARN)
 logger.info('hello world')
 logger.warn('hello %s', 'lorry')
+
+sh.setLevel(ERROR)
+logger.info('hello info')
+logger.warn('hello warning')
