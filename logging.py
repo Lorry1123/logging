@@ -3,17 +3,42 @@
 import sys
 from exceptions import Exception
 
+CRITICAL = 50
+FATAL = CRITICAL
+ERROR = 40
+WARNING = 30
+WARN = WARNING
+INFO = 20
+DEBUG = 10
+NOTSET = 0
+
+_levelNames = {
+    CRITICAL : 'CRITICAL',
+    ERROR : 'ERROR',
+    WARNING : 'WARNING',
+    INFO : 'INFO',
+    DEBUG : 'DEBUG',
+    NOTSET : 'NOTSET',
+    'CRITICAL' : CRITICAL,
+    'ERROR' : ERROR,
+    'WARN' : WARNING,
+    'WARNING' : WARNING,
+    'INFO' : INFO,
+    'DEBUG' : DEBUG,
+    'NOTSET' : NOTSET,
+}
+
 class Logger():
     def __init__(self, name):
         self.name = name
         self.handlers = []
 
-    def log(self, msg, *args):
+    def _log(self, level, msg, args):
         if not len(self.handlers):
             raise Exception('No handlers could be found for logger "%s"' % self.name)
 
         for handler in self.handlers:
-            record = LogRecord(self.name, 'warning', msg, args)
+            record = LogRecord(self.name, level, msg, args)
             handler.emit(record)
 
     def addHandler(self, handler):
@@ -21,6 +46,21 @@ class Logger():
             raise Exception('addHandler only receive a instance of BaseHandler')
 
         self.handlers.append(handler)
+
+    def debug(self, msg, *args):
+        self._log(DEBUG, msg, args)
+
+    def info(self, msg, *args):
+        self._log(INFO, msg, args)
+
+    def warning(self, msg, *args):
+        self._log(WARN, msg, args)
+
+    warn = warning
+
+    def error(self, msg, *args):
+        self._log(ERROR, msg, args)
+
 
 
 class BaseHandler():
@@ -47,7 +87,7 @@ class MyStreamHandler(BaseHandler):
 class LogRecord():
     def __init__(self, name, level, msg, args):
         self.name = name
-        self.level = level
+        self.level = _levelNames[level]
         self.msg = msg
         self.args = args
 
@@ -73,5 +113,5 @@ sh = MyStreamHandler()
 sh.setFormatter(Formatter('[%(level)s][%(message)s]'))
 logger.addHandler(sh)
 logger.addHandler(MyStreamHandler())
-logger.log('hello world')
-logger.log('hello %s', 'lorry')
+logger.info('hello world')
+logger.warn('hello %s', 'lorry')
