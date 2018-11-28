@@ -32,6 +32,7 @@ class Logger():
     def __init__(self, name):
         self.name = name
         self.handlers = []
+        self.level = NOTSET
 
     def _log(self, level, msg, args):
         if not len(self.handlers):
@@ -47,19 +48,29 @@ class Logger():
 
         self.handlers.append(handler)
 
+    def setLevel(self, level):
+        self.level = level
+
+    def isEnabledFor(self, level):
+        return level >= self.level
+
     def debug(self, msg, *args):
-        self._log(DEBUG, msg, args)
+        if self.isEnabledFor(DEBUG):
+            self._log(DEBUG, msg, args)
 
     def info(self, msg, *args):
-        self._log(INFO, msg, args)
+        if self.isEnabledFor(INFO):
+            self._log(INFO, msg, args)
 
     def warning(self, msg, *args):
-        self._log(WARN, msg, args)
+        if self.isEnabledFor(WARN):
+            self._log(WARN, msg, args)
 
     warn = warning
 
     def error(self, msg, *args):
-        self._log(ERROR, msg, args)
+        if self.isEnabledFor(ERROR):
+            self._log(ERROR, msg, args)
 
 
 
@@ -113,5 +124,8 @@ sh = MyStreamHandler()
 sh.setFormatter(Formatter('[%(level)s][%(message)s]'))
 logger.addHandler(sh)
 logger.addHandler(MyStreamHandler())
+
+
+logger.setLevel(WARN)
 logger.info('hello world')
 logger.warn('hello %s', 'lorry')
