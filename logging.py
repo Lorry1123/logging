@@ -29,22 +29,32 @@ _levelNames = {
 }
 
 class Logger():
-    def __init__(self, name):
+    def __init__(self, name, propagate=True):
         self.name = name
         self.handlers = []
         self.level = NOTSET
+        self.parent = None
+        self.propagate = propagate
 
     def _log(self, level, msg, args):
-        if not len(self.handlers):
-            raise Exception('No handlers could be found for logger "%s"' % self.name)
-
         record = LogRecord(self.name, level, msg, args)
         self.callHandlers(record)
 
     def callHandlers(self, record):
-        for handler in self.handlers:
-            if record.levelno >= handler.level:
-                handler.emit(record)
+        c = self
+        found = 0
+        while c:
+            for handler in c.handlers:
+                found += 1
+                if record.levelno >= handler.level:
+                    handler.emit(record)
+            if not c.propagate:
+                c = None
+            else:
+                c = c.parent
+
+        if found == 0:
+            raise Exception('No handlers could be found for logger "%s"' % self.name)
 
     def addHandler(self, handler):
         if not isinstance(handler, BaseHandler):
@@ -135,10 +145,23 @@ logger.addHandler(sh)
 # logger.addHandler(MyStreamHandler())
 
 
-logger.setLevel(WARN)
-logger.info('hello world')
-logger.warn('hello %s', 'lorry')
+# logger.setLevel(WARN)
+# logger.info('hello world')
+# logger.warn('hello %s', 'lorry')
 
-sh.setLevel(ERROR)
-logger.info('hello info')
-logger.warn('hello warning')
+# sh.setLevel(ERROR)
+# logger.info('hello info')
+# logger.warn('hello warning')
+
+parent = Logger('parent logger')
+parent_hdl = MyStreamHandler()
+parent_hdl.setFormatter(Formatter('[PARENT][%(level)s][%(message)s]'))
+parent.addHandler(parent_hdl)
+# 父节点
+
+logger.parent = parent
+
+logger.info('hello parent')
+
+logger.propagate = False
+logger.info('hello parent 2')
