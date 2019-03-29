@@ -57,12 +57,12 @@ formatter 参考
 %(message)s | The result of record.getMessage(), computed just as the record is emitted
 
 ## 原理
-1. Logger & Handler，基本打印日志 [戳我](/commit/b80857f6f232fdb99a349d4c54a6a6bed95f7ccd)
-2. 增加 Formatter，引入 LogRecord，支持各种格式 [戳我](/commit/e634d014b304a487b2650326b24a7e006f582355)
-3. 引入 LogLevel [打印不同等级的接口](/commit/dfa03f72ed6c5de107c1b6e45187b9a1819580ec)
-4. logLevel 过滤 [logger 对 level 过滤](/commit/668dee9819ea02278d14d637e71aece46f36b595) [Handler 对 level 的过滤](/commit/ad5855e40d4d7b255a42e4b5a6f006c630a8f252)
-5. logger 父子关系引入 [戳我](/commit/b4ddaa14f95fdff6da67703af9f46a3bbc7dcf83)
-6. 魔改姿势 [戳我](/commit/5c265c654846bd96eff8911eddf4ae1d6442d0d4)
+1. Logger & Handler，基本打印日志 [戳我](https://github.com/Lorry1123/logging/commit/b80857f6f232fdb99a349d4c54a6a6bed95f7ccd)
+2. 增加 Formatter，引入 LogRecord，支持各种格式 [戳我](https://github.com/Lorry1123/logging/commit/e634d014b304a487b2650326b24a7e006f582355)
+3. 引入 LogLevel [打印不同等级的接口](https://github.com/Lorry1123/logging/commit/dfa03f72ed6c5de107c1b6e45187b9a1819580ec)
+4. logLevel 过滤 [logger 对 level 过滤](https://github.com/Lorry1123/logging/commit/668dee9819ea02278d14d637e71aece46f36b595) [Handler 对 level 的过滤](https://github.com/Lorry1123/logging/commit/ad5855e40d4d7b255a42e4b5a6f006c630a8f252)
+5. logger 父子关系引入 [戳我](https://github.com/Lorry1123/logging/commit/b4ddaa14f95fdff6da67703af9f46a3bbc7dcf83)
+6. 魔改姿势 [戳我](https://github.com/Lorry1123/logging/commit/5c265c654846bd96eff8911eddf4ae1d6442d0d4)
 	- 外面包一层，转发到 Logger
 	- 根据需求，更改 Logger、Handler、Formatter
 
