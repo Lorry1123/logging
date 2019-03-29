@@ -65,6 +65,9 @@ formatter 参考
 6. 魔改姿势 [戳我](https://github.com/Lorry1123/logging/commit/5c265c654846bd96eff8911eddf4ae1d6442d0d4)
 	- 外面包一层，转发到 Logger
 	- 根据需求，更改 Logger、Handler、Formatter
+	
+## 更新
+上述内容看到 5 就好，需要自定义功能应优先考虑 Adaptor 和 Filter，代码中的修改 extra 其实应该是 Adaptor 的内容，只有非常极端的情况才需要替换 Logger
 
 
 附：[logger flow](https://upload-images.jianshu.io/upload_images/477558-a099cc71d0a4c453.png?imageMogr2/auto-orient/)
